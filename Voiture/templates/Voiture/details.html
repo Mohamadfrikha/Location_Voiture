@@ -1,0 +1,189 @@
+{% load static %}
+{% load lucide %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Location de Voitures{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="flex flex-col min-h-screen">
+
+ 
+    {% include "Voiture/navbar.html" %}
+
+<div class="flex justify-center items-center py-16 bg-white" data-theme="silk">
+    <div class="flex flex-col lg:flex-row w-[90%]  gap-12 bg-white">
+  <div class="w-full lg:w-[60%] relative ">
+
+    <!-- MAIN IMAGE -->
+    <div class="relative rounded-2xl overflow-hidden shadow-xl">
+      <img id="mainImage"
+           src="{{ voiture.image.url }}"
+           class="w-full h-[450px] object-cover transition duration-300 rounded-2xl">
+
+      <div class="absolute bottom-4 right-4 bg-black/60 text-white px-3 py-1 rounded-lg text-sm">
+        <span id="imageCounter">1</span> / {{ voiture.images.count|add:"1" }}
+      </div>
+
+      <!-- Carousel arrows -->
+      <div class="absolute inset-0 flex justify-between items-center px-4">
+        <button id="prevBtn" class="btn btn-circle btn-sm bg-white/70 border-none">❮</button>
+        <button id="nextBtn" class="btn btn-circle btn-sm bg-white/70 border-none">❯</button>
+      </div>
+    </div>
+
+    <!-- THUMBNAILS -->
+    <div class="flex gap-4 mt-4 overflow-x-auto pb-2">
+    <!-- Image principale comme première miniature -->
+    <img src="{{ voiture.image.url }}"
+         onclick="changeImage(this, 1)"
+         class="thumb w-28 h-20 object-cover rounded-xl cursor-pointer opacity-60 border-2 border-transparent transition">
+
+    {% for img in voiture.images.all %}
+    <img src="{{ img.image.url }}"
+         onclick="changeImage(this, {{ forloop.counter|add:'1' }})"
+         class="thumb w-28 h-20 object-cover rounded-xl cursor-pointer opacity-60 border-2 border-transparent transition">
+    {% endfor %}
+</div>
+
+  </div>
+
+    <!-- CARD DETAILS -->
+    <div class="card w-full lg:w-[40%] bg-base-100 shadow-2xl rounded-2xl p-6 h-auto">
+      <div class="card-body space-y-4">
+        <h2 class="card-title text-3xl font-bold">
+          {{ voiture.modele.marque.nom }} {{ voiture.modele.nom }} ({{ voiture.modele.annee }})
+        </h2>
+
+       <p>{{ voiture.description }}</p>
+        <div class="flex items-center justify-center gap-4">
+          <span class="text-gray-500">Kilométrage : {{ voiture.kilometrage }} km/h</span>
+          <span class="text-gray-500 ml-4">Couleur : {{ voiture.couleur }}</span>
+          
+    {% if voiture.location_disponible %}
+        <span class="badge badge-outline text-green-600 border-green-600">
+            Disponible
+        </span>
+    {% else %}
+        <span class="badge badge-outline text-red-600 border-red-600">
+            Non disponible
+        </span>
+    {% endif %}
+        </div>
+        <div>
+          <span class="text-gray-500">Locations indisponibles en :</span>
+          <ul class="list-disc list-inside text-gray-500">
+            {% for location in locations_indesponibles %}
+              <li>{{ location.date_debut }} au {{ location.date_fin }}</li>
+            {% empty %}
+              <li>Aucune location indisponible</li>
+            {% endfor %}
+          </ul>
+          </div>
+        <div class="flex flex-wrap items-center gap-3 text-sm sm:text-base lg:text-lg">
+    
+    <span class="badge badge-primary badge-lg">
+        {{ voiture.prix_par_jour }} DT / jour
+    </span>
+          
+    <span class="badge badge-outline">
+        {{ voiture.modele.boite }}
+    </span>
+
+    <span class="badge badge-outline">
+        {{ voiture.modele.carburant }}
+    </span>
+
+
+</div>
+        
+
+        <div class="divider"></div>
+
+        <div class="card-actions w-full">
+    {% if  peut_demande %}
+        <!-- L'utilisateur n'a pas de réservation → peut réserver -->
+        <a href="{% url 'location:louer_voiture' voiture.id %}" class="btn btn-primary w-full text-lg">
+            Réserver maintenant
+        </a>
+    {% elif  peut_modifier and not peut_payer %}
+        <!-- L'utilisateur peut modifier mais pas encore payer -->
+        <div class="flex flex-col gap-2 mt-2">
+        <a href="#" class="btn btn-primary w-full text-lg">
+            Modifier réservation
+        </a>
+    </div>
+
+    {% else %}
+    <!-- Tous les autres cas -->
+    {% if loc.est_active %}
+        <p class="text-gray-600 mt-2">
+            Vous avez déjà une location active pour cette voiture. 
+      {% elif loc.paiement_partiel_effectue and not loc.paiement_total_effectue %}
+        <p class="text-gray-600 mt-2">
+            Vous avez effectué un paiement partiel de {{loc.pourcentage_partiel}} pour cette location . Veuillez compléter le paiement pour finaliser la réservation.
+        </p>
+    {% elif loc.paiement_total_effectue %}
+        <p class="text-gray-600 mt-2">
+            Paiement complet effectué. Merci ! Votre location est confirmée.
+        </p>
+      {%endif%}
+
+    
+{% endif %}
+</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+  const mainImage = document.getElementById('mainImage');
+const counter = document.getElementById('imageCounter');
+const thumbs = document.querySelectorAll('.thumb');
+let currentIndex = 1;
+
+function changeImage(img, index) {
+  // Changer l'image principale
+  mainImage.src = img.src;
+  currentIndex = index;
+  counter.innerText = currentIndex;
+
+  // Retirer classes aux autres miniatures
+  thumbs.forEach(t => {
+    t.classList.remove('border-blue-500');
+    t.classList.remove('opacity-100');
+    t.classList.add('opacity-60');
+  });
+
+  // Ajouter classe uniquement à l'image sélectionnée
+  img.classList.add('border-blue-500');
+  img.classList.add('opacity-100');
+}
+
+// Initial highlight
+thumbs[0].classList.add('border-blue-500', 'opacity-100');
+
+// Navigation avec les flèches
+document.getElementById('prevBtn').addEventListener('click', () => {
+  currentIndex--;
+  if (currentIndex < 1) currentIndex = thumbs.length;
+  changeImage(thumbs[currentIndex - 1], currentIndex);
+});
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  currentIndex++;
+  if (currentIndex > thumbs.length) currentIndex = 1;
+  changeImage(thumbs[currentIndex - 1], currentIndex);
+});
+</script>
+<footer style="background: rgba(44, 62, 80, 0.95); color: white; text-align: center; padding: 2rem; margin-top: 4rem;">
+    <p>&copy; 2024 Location de Voitures. Tous droits réservés.</p>
+</footer>
+
+</body>
+</html>

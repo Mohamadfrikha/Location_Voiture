@@ -1,0 +1,181 @@
+{% load static %} {% load lucide %}
+<video
+    autoplay
+    muted
+    loop
+    class="absolute top-0 left-0 w-full h-full object-cover"
+  >
+    <source src="{% static 'videos/header.mp4' %}" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  <div class="navbar bg-base-100/70 shadow-sm relative z-20">
+    <div class="flex-1 flex items-center gap-4">
+      <!-- Logo + nom -->
+      <a class="flex items-center gap-2" href="{% url 'voiture:accueil' %}">
+        <img
+          src="{% static 'images/logo.png' %}"
+          alt="Logo"
+          class="w-40 h-auto"
+        />
+      </a>
+      <!-- Lien Accueil -->
+      <a
+        href="{% url 'voiture:accueil' %}"
+        class="text-lg font-medium text-gray-700 hover:text-indigo-600 transition-colors"
+      >
+        Accueil
+      </a>
+      <a
+        href="{% url 'location:mes_locations' %}"
+        class="text-lg font-medium text-gray-700 hover:text-indigo-600 transition-colors ml-4"
+    >
+        Mes locations
+    </a>
+    </div>
+
+    <div class="flex-none mr-1 flex items-center gap-2">
+      <!-- Dropdown panier -->
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" class="btn btn-ghost btn-circle">
+          <div class="indicator">
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-heart-icon"
+                    
+                  >
+                    <path
+                      d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                    />
+                  </svg>
+            <span class="badge badge-sm indicator-item">{{ nb_favoris }}</span>
+          </div>
+        </div>
+        
+        <div
+          tabindex="0"
+          class="card card-compact dropdown-content bg-base-100 z-20 mt-3 w-60 shadow"
+        >
+          <div class="card-body">
+            <span class=" font-bold text-center">{{ nb_favoris }} Voitures Favoris</span>
+            <div class="card-actions">
+              <a href="{%url "favori:voiture_favoris" %}" class="btn btn-primary btn-block">Voir mes  favoris</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost btn-circle">
+              <div class="indicator">
+                  <!-- Icon -->
+                  <svg xmlns="http://www.w3.org/2000/svg" 
+                      width="24"
+                    height="24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-heart-icon">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M15 17h5l-1.405-1.405C18.195 15.195 18 14.71 18 14.2V11a6 6 0 10-12 0v3.2c0 .51-.195.995-.595 1.395L4 17h5m6 0a3 3 0 11-6 0m6 0H9"/>
+                  </svg>
+
+                  
+                      <span class="badge badge-sm indicator-item">
+                          {{ nb_notification }}
+                      </span>
+                 
+                </div>
+          </label>
+
+          <div tabindex="0" class="dropdown-content z-[1] mt-3 w-80 rounded-xl bg-base-100 shadow-lg p-2">
+              {% if not user.is_authenticated %}
+
+                <div class="bg-base-200 rounded-lg p-4 text-center text-sm text-base-content/60">
+                    Connectez-vous pour voir vos notifications
+                </div>
+
+            {% else %}
+              {% if nb_notification == 0 %}
+                  <div class="bg-base-200 rounded-lg p-4 text-center text-sm text-base-content/60">
+                      Aucune notification
+                  </div>
+              {% endif %}
+
+              {% for item in notifications %}
+                  <div class="bg-base-200 rounded-lg p-3 mb-2 transition {% if item.is_read %}opacity-60{% else %}border-l-4 border-primary{% endif %}">
+                      
+                      <div class="flex justify-between items-start gap-2">
+                          
+                          <div>
+                              <span class="font-semibold text-sm">
+                                  {{ item.sujet }}
+                              </span>
+                              <p class="text-xs mt-1 opacity-70">
+                                  {{ item.message }}
+                              </p>
+                          </div>
+
+                          <span class="text-xs opacity-50 whitespace-nowrap">
+                              {{ item.date_envoi|date:"d/m/Y H:i" }}
+                          </span>
+
+                      </div>
+
+                  </div>
+              {% endfor %}
+              {% endif %}
+          </div>
+      </div>
+
+      <!-- Dropdown profil -->
+      {% if user.is_authenticated %}
+      <div class="dropdown dropdown-end">
+        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+          <div class="w-10 rounded-full">
+            <img alt="Avatar" src="{{user.photo.url}}" />
+            <h2 class="text-sm font-medium text-gray-700 ml-2">
+              {{ user.nom }} {{ user.prenom }}
+            </h2>
+          </div>
+        </label>
+        <ul
+          tabindex="0"
+          class="menu menu-sm dropdown-content bg-base-100 rounded-box z-20 mt-3 w-52 p-2 shadow"
+        >
+          <li class="px-2 py-1 text-sm font-medium text-gray-700">
+            {{ user.nom }} {{ user.prenom }}
+          </li>
+          <li><a href="#">Profil</a></li>
+          {% if user.is_staff %}
+            <li><a href="{% url 'admin:index' %}">Admin</a></li>
+        {% endif %}
+          <li><a href="{% url 'client:client_logout' %}">Déconnexion</a></li>
+        </ul>
+      </div>
+      {% else %}
+      <a
+        href="{% url 'client:client_login' %}"
+        class="text-lg font-medium text-gray-700 hover:text-indigo-600 transition-colors"
+      >
+        Connexion </a
+      >|
+      <a
+        href="{% url 'client:client_create' %}"
+        class="text-lg font-medium text-gray-700 hover:text-indigo-600 transition-colors"
+      >
+        Inscription
+      </a>
+
+      {% endif %}
+    </div>
+  </div>

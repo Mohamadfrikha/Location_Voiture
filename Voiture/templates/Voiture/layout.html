@@ -1,0 +1,128 @@
+{% load static %}
+{% load lucide %}
+<html >
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+        <link rel="icon" href="{% static 'favicon.ico' %}">
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body   class="flex flex-col min-h-screen" >
+    <header class="relative w-full h-100" data-theme="silk">
+        {% include "Voiture/navbar_video.html" %}
+    <div class="grid z-10 justify-center items-center h-full relative ">
+    <div class="relative z-10 flex flex-col items-center justify-center h-full">
+        <h1 class="text-4xl md:text-6xl font-bold text-white text-center">
+            Bienvenue chez Location de Voitures
+        </h1>  
+
+        <table class="table table-compact w-[70%] mt-6 text-center bg-base-300 rounded-lg shadow-md">
+            <tbody class="border-gray-300">
+    <tr>
+        <td class="font-bold text-lg">
+    <div class="dropdown w-full">
+
+        <!-- Button -->
+        <label tabindex="0"
+               class="btn btn-outline bg-white w-full justify-between rounded-xl border-gray-300 hover:bg-gray-50">
+
+            <span>
+                {% if sort_by %}
+                    {% for marque in liste_marques %}
+                        {% if sort_by == marque.marque.id|stringformat:"s" %}
+                            {{ marque.marque.nom }}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    Choisir marque
+                {% endif %}
+            </span>
+
+            <!-- Flèche -->
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="w-4 h-4 opacity-60"
+                 fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+                <path stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"/>
+            </svg>
+        </label>
+
+        <!-- Menu -->
+        <ul tabindex="0"
+            class="dropdown-content z-1 menu bg-white
+                   rounded-xl w-full mt-2 p-2 shadow-lg border">
+
+            {% for marque in liste_marques %}
+            <li>
+                <a href="?marque={{ marque.marque.id }}"
+                   class="flex justify-between items-center
+                          hover:bg-gray-100 rounded-lg">
+
+                    <span>{{ marque.marque.nom }}</span>
+
+                    <span class="badge badge-sm
+                        {% if sort_by == marque.marque.id|stringformat:'s' %}
+                            badge-primary
+                        {% else %}
+                            badge-ghost
+                        {% endif %}">
+                        {{ marque.nb_voitures }}
+                    </span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+</td>
+        {% if sort_by %}
+<td class="font-bold text-lg">
+    <select onchange="
+        if(this.value) {
+            window.location.href = '?marque={{ sort_by }}&modele=' + this.value;
+        }
+    "
+    class="select bg-white border-gray-300 w-full rounded-xl
+           focus:outline-none focus:ring-2 focus:ring-primary">
+        <option disabled selected value="">Choisir modele</option>
+        {% for mo in models %}
+            <option value="{{ mo.id }}" {% if modele_id|stringformat:'s' == mo.id|stringformat:'s' %}selected{% endif %}>{{ mo.nom }}</option>
+        {% endfor %}
+    </select>
+</td>
+{% endif %}
+<td class="font-bold text-lg w-[20%]">
+    <a class="btn btn-sm btn-primary btn-circle"
+       href="{% url 'voiture:voitures' %}{% if sort_by %}?marque={{ sort_by }}{% endif %}{% if modele_id %}&modele={{ modele_id }}{% endif %}">
+        {% lucide "search" size=20 class="text-white" %}
+    </a>
+</td>
+    </tr>
+</tbody>
+
+        
+        </table>
+    </div>
+</div>
+    </header>
+        <main class="flex-1 bg-white m-10" >
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer style="background: rgba(44, 62, 80, 0.95); color: white; text-
+        align: center; padding: 2rem; margin-top: 4rem;">
+
+        <p>&copy; 2024 Location de Voitures. Tous droits réservés.</p>
+        </footer>
+        
+    </body>
+</html>

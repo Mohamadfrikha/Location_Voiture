@@ -1,0 +1,19 @@
+
+
+# Ignore fichiers Python compilés
+*.pyc
+*.exe
+__pycache__/
+
+# Ignore fichiers temporaires, logs, medias lourds
+*.log
+*.sqlite3
+media/
+
+.env
+myenv/
+
+node_modules/
+tailwindcss.exe
+/static/css/
+staticfiles/css/

@@ -1,0 +1,52 @@
+{% load static %}
+{% load lucide %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Location de Voitures{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+<body data-theme="silk">
+  <div class="min-h-screen flex items-center justify-center bg-base-100 px-4">
+<div class="w-full max-w-90 mx-auto bg-white p-6 rounded-lg shadow-md mt-10">
+  <h2 class="text-2xl font-bold mb-6 text-center">Louer une voiture</h2>
+
+  <form method="POST" action="{% url 'location:louer_voiture' voiture.id %}" class="space-y-4">
+    {% csrf_token %}
+    
+    <div>
+  <label class="label font-medium">Date de début</label>
+  <input id="date_debut" type="text" name="date_debut" class="input input-bordered w-full" placeholder="jj/mm/yy "required>
+</div>
+
+<div>
+  <label class="label font-medium">Date de fin</label>
+  <input id="date_fin" type="text" name="date_fin" class="input input-bordered w-full" placeholder="jj/mm/yy "required>
+</div>
+
+    <!-- Bouton -->
+    <button type="submit" class="btn btn-primary w-full mt-4">Réserver</button>
+  </form>
+</div></div>
+<script>
+  const disabledDates = {{ dates_reservees|safe }};
+
+  flatpickr("#date_debut", {
+    minDate: "today",
+    disable: disabledDates
+  });
+
+  flatpickr("#date_fin", {
+    minDate: "today",
+    disable: disabledDates
+  });
+</script>
+<body>
+</html>

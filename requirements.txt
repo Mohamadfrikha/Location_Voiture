@@ -1,0 +1,10 @@
+django>=5.0
+gunicorn
+
+psycopg2-binary # PostgreSQL
+whitenoise # Fichiers statiques
+python-decouple # Variables d'environnement
+
+Pillow
+django-lucide
+stripe

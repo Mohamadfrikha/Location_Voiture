@@ -1,0 +1,47 @@
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc; padding:20px; font-family:Arial, sans-serif;">
+  <tr>
+    <td align="center">
+      <table width="500" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:1rem; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+
+        <!-- Header -->
+        <tr>
+          <td style="background:#f0e6f6; color:#4f46e5; padding:20px; text-align:center; font-size:22px; font-weight:bold;">
+             Paiement réussi
+          </td>
+        </tr>
+
+        <!-- Body -->
+        <tr>
+          <td style="padding:20px; color:#111827; font-size:16px;">
+            <p>Bonjour {{ location.client }},</p>
+            <p>Nous confirmons que votre paiement <strong>{{ type_paiement }}</strong> pour la location de la voiture <strong>{{ location.voiture }}</strong> a été effectué avec succès.</p>
+            
+            <table width="100%" cellpadding="5" cellspacing="0" style="margin-top:10px; border:1px solid #e5e7eb; border-radius:8px;">
+              <tr style="background:#f9fafb;">
+                <td><strong>Date début :</strong></td>
+                <td>{{ location.date_debut }}</td>
+              </tr>
+              <tr>
+                <td><strong>Date fin :</strong></td>
+                <td>{{ location.date_fin }}</td>
+              </tr>
+              <tr style="background:#f9fafb;">
+                <td><strong>Montant payé :</strong></td>
+                <td>{{ location.montant_paye }} TND</td>
+              </tr>
+            </table>
+
+            <p style="margin-top:15px;">Merci pour votre confiance !</p>
+          </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+          <td style="background:#f0f0f0; padding:15px; text-align:center; font-size:12px; color:#6b7280;">
+            © 2026 Location Voiture. Tous droits réservés.
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
