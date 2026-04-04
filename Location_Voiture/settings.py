@@ -155,7 +155,6 @@ EMAIL_HOST_USER = 'mohamedfrikha65@gmail.com' # الإيميل اللي باش �
 EMAIL_HOST_PASSWORD =config('EMAIL_HOST_PASSWORD') #هذا App Password
 DEFAULT_FROM_EMAIL = 'mohamedfrikha65@gmail.com'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 STRIPE_SECRET_KEY =config('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY =config('STRIPE_PUBLISHABLE_KEY')
