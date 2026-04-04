@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     "SecureToken",
     'payments',
     'Favori',
-    'Notification'
+    'Notification',
+    'cloudinary', 'cloudinary_storage'
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,12 @@ STRIPE_SECRET_KEY =config('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY =config('STRIPE_PUBLISHABLE_KEY')
 
 currency='usd' 
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+import cloudinary
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+    api_key=config('CLOUDINARY_API_KEY'),
+    api_secret=config('CLOUDINARY_API_SECRET')
+)

@@ -4,6 +4,8 @@ gunicorn
 psycopg2-binary # PostgreSQL
 whitenoise # Fichiers statiques
 python-decouple # Variables d'environnement
+cloudinary
+django-cloudinary-storage
 
 Pillow
 django-lucide
