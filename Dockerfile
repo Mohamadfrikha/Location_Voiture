@@ -19,4 +19,4 @@ COPY . .
 # Exposer le port
 EXPOSE 8000
 # Commande de démarrage
-CMD python manage.py migrate && gunicorn Location_Voiture.wsgi:application --bind 0.0.0.0:$PORT
+CMD python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Location_Voiture.wsgi:application --bind 0.0.0.0:$PORT
